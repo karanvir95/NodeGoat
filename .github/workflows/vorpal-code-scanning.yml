@@ -1,0 +1,35 @@
+name: Vorpal Code Scanning with reviewdog
+
+on: # Defines when the workflow should be triggered
+  push: # Trigger on push events to the specified branches
+    branches:
+      - master
+  pull_request: # Trigger on pull requests targeting the specified branches
+    branches:
+      - master
+  schedule: # Trigger on a schedule (optional)
+    - cron: "0 3 * * *" # Runs daily at 3 AM UTC
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install project dependencies
+        run: npm install
+
+      - name: Vorpal GitHub Action With reviewdog
+        uses: Checkmarx/vorpal-reviewdog-github-action@v1.1.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          source_path: "." # Adjust this if your code is in a subdirectory
+          reporter: github-pr-review
+          level: warning

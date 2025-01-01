@@ -1,0 +1,23 @@
+name: Pipeline Example With 2MS
+
+on:
+  pull_request:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v2  # Use a stable version of actions/checkout
+        with:
+          fetch-depth: 0  # Required for 2MS to have visibility to all commit history
+
+      # Run 2MS scan using Docker
+      - name: Run 2MS Scan
+        run: docker run --rm -v ${{ github.workspace }}:/repo checkmarx/2ms:2.8.1 git /repo

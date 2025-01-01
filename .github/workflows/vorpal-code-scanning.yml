@@ -33,3 +33,10 @@ jobs:
           source_path: "server.js" # Adjust this if your code is in a subdirectory
           reporter: github-pr-review
           level: warning
+
+      # Upload result file as artifact
+      - name: Upload Scan Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: scan-results
+          path: /github/workspace/result.errorformat

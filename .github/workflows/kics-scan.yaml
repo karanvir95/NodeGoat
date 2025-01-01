@@ -13,19 +13,21 @@ jobs:
   kics_scan:
     runs-on: ubuntu-latest
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          # Ensures the full commit history is available
+          fetch-depth: 0
 
-      # Scan IaC with KICS
-                    
-      - name: KICS Github Action
+      # Set up KICS scan
+      - name: Run KICS Scan
         uses: Checkmarx/kics-github-action@v2.1.3
         with:
-          # Paths to scan, here we use the entire repository
+          # Path to scan; using '.' to scan the entire repository
           path: '/'
-          output_path: myResults/
-
-      # Display the results in JSON format
-      - name: Display KICS results
-        run: |
-          cat myResults/results.json
+          # Output location for scan results
+          output_path: ./kics_results
+          # Optional: Specify additional parameters if needed, such as cloud provider or secrets scanning
+          # Example:
+          # --cloud-provider aws,azure
+          # --disable-secrets

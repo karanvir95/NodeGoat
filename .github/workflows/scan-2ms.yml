@@ -20,4 +20,4 @@ jobs:
 
       # Run 2MS scan using Docker
       - name: Run 2MS Scan
-        run: docker run --rm -v ${{ github.workspace }}:/repo checkmarx/2ms:2.8.1 git /repo
+        run: docker run --rm -v ${{ github.workspace }}:/repo checkmarx/2ms:3.15.1 git /repo

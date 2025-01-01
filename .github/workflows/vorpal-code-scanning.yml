@@ -30,6 +30,6 @@ jobs:
         uses: Checkmarx/vorpal-reviewdog-github-action@v1.1.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          source_path: "/NodeGoat/server.js" # Adjust this if your code is in a subdirectory
+          source_path: "server.js" # Adjust this if your code is in a subdirectory
           reporter: github-pr-review
           level: warning

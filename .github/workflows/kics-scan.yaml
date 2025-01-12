@@ -20,8 +20,8 @@ jobs:
 
       - name: Set up KICS CLI
         run: |
-          # Install KICS CLI
-          curl -sSL https://github.com/Checkmarx/kics/releases/download/v1.8.0/kics-linux-amd64.tar.gz | tar -xz -C /usr/local/bin
+          # Install KICS CLI by downloading the correct tar.gz file
+          curl -sSL https://github.com/Checkmarx/kics/releases/download/v1.8.0/kics-linux-amd64-v1.8.0.tar.gz | tar -xz -C /usr/local/bin
           kics --version  # Verify installation
 
       - name: Create output directory

@@ -16,18 +16,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
-          # Ensures the full commit history is available
           fetch-depth: 0
 
-      # Set up KICS scan
+      - name: Ensure results directory exists
+        run: mkdir -p ./results
+
       - name: Run KICS Scan
         uses: Checkmarx/kics-github-action@v2.1.3
         with:
-          # Path to scan; using '.' to scan the entire repository
-          path: '/'
-          # Output location for scan results
+          path: '.'
           output_path: ./results
-          # Optional: Specify additional parameters if needed, such as cloud provider or secrets scanning
-          # Example:
-          # --cloud-provider aws,azure
-          # --disable-secrets
+          additional_args: '--log-level DEBUG'
+
+      - name: Verify results
+        run: |
+          if [ ! -f ./results/results.json ]; then
+            echo "KICS scan did not generate results.json"
+            exit 1
+          else
+            echo "Scan completed successfully"
+          fi

@@ -16,27 +16,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
+          # Ensures the full commit history is available
           fetch-depth: 0
 
-      - name: Set up KICS CLI
-        run: |
-          # Install KICS CLI by downloading the correct tar.gz file
-          curl -sSL https://github.com/Checkmarx/kics/releases/download/v1.8.0/kics-linux-amd64-v1.8.0.tar.gz | tar -xz -C /usr/local/bin
-          kics --version  # Verify installation
-
-      - name: Create output directory
-        run: mkdir -p $GITHUB_WORKSPACE/kics_results  # Ensure output directory exists
-
-      - name: Run KICS Scan with JSON output
-        run: |
-          # Run KICS scan with JSON output
-          ./kics scan -p $GITHUB_WORKSPACE -o $GITHUB_WORKSPACE/kics_results --output-format json --output-name kics-result.json
-
-      - name: List files in output directory
-        run: ls -al $GITHUB_WORKSPACE/kics_results  # Verify that the scan output files exist
-
-      - name: Upload KICS Results as Artifact
-        uses: actions/upload-artifact@v3
+      # Set up KICS scan
+      - name: Run KICS Scan
+        uses: Checkmarx/kics-github-action@v2.1.3
         with:
-          name: kics-results
-          path: $GITHUB_WORKSPACE/kics_results  # Upload results folder as artifact
+          # Path to scan; using '.' to scan the entire repository
+          path: '/'
+          # Output location for scan results
+          output_path: ./kics_results
+          # Optional: Specify additional parameters if needed, such as cloud provider or secrets scanning
+          # Example:
+          # --cloud-provider aws,azure
+          # --disable-secrets

@@ -34,21 +34,34 @@ jobs:
           reporter: github-pr-review
           level: warning
 
-      # Upload scan results as artifact
+      # Ensure results are generated and present in the directory
+      - name: Check for results
+        run: |
+          if [ ! -d ./results ]; then
+            echo "Results directory does not exist. Creating..."
+            mkdir ./results
+          fi
+          if [ -f /github/workspace/result.errorformat ]; then
+            echo "Scan result file found."
+            mv /github/workspace/result.errorformat ./results/
+          else
+            echo "No result file found. Exiting..."
+            exit 1
+          fi
+
+      # Archive the results directory before uploading
+      - name: Archive scan results
+        run: |
+          tar -czf /github/workspace/results.tar.gz -C ./results .
+
+      # Upload the archived results
       - name: Upload Scan Results
         uses: actions/upload-artifact@v3
         with:
           name: vorpal-scan-results
-          path: ./results
+          path: /github/workspace/results.tar.gz
 
-
-      # List directory contents for debugging
-      - name: List directory for debugging
-        run: |
-          echo "Listing the contents of the results directory"
-          ls -R ./results
-
-      # Verify that results.json exists
+      # Verify results file was uploaded
       - name: Verify results
         run: |
           if [ ! -f ./results/results.json ]; then

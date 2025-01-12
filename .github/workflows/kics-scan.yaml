@@ -18,21 +18,25 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Create output directory
-        run: mkdir -p $GITHUB_WORKSPACE/Documents/Dev/NodeGoat/results  # Use $GITHUB_WORKSPACE for the correct directory
+      - name: Set up KICS CLI
+        run: |
+          # Install KICS CLI
+          curl -sSL https://github.com/Checkmarx/kics/releases/download/v1.8.0/kics-linux-amd64.tar.gz | tar -xz -C /usr/local/bin
+          kics --version  # Verify installation
 
-      - name: Run KICS Scan
-        uses: Checkmarx/kics-github-action@v2.1.3
-        with:
-          path: '/'
-          output_path: $GITHUB_WORKSPACE/Documents/Dev/NodeGoat/results  # Correct output path using $GITHUB_WORKSPACE
-          args: '--verbose --no-progress --output-format json'
+      - name: Create output directory
+        run: mkdir -p $GITHUB_WORKSPACE/kics_results  # Ensure output directory exists
+
+      - name: Run KICS Scan with JSON output
+        run: |
+          # Run KICS scan with JSON output
+          ./kics scan -p $GITHUB_WORKSPACE -o $GITHUB_WORKSPACE/kics_results --output-format json --output-name kics-result.json
 
       - name: List files in output directory
-        run: ls -al $GITHUB_WORKSPACE/Documents/Dev/NodeGoat/results  # List files to ensure the results are saved
+        run: ls -al $GITHUB_WORKSPACE/kics_results  # Verify that the scan output files exist
 
       - name: Upload KICS Results as Artifact
         uses: actions/upload-artifact@v3
         with:
           name: kics-results
-          path: $GITHUB_WORKSPACE/Documents/Dev/NodeGoat/results  # Upload results as artifact
+          path: $GITHUB_WORKSPACE/kics_results  # Upload results folder as artifact

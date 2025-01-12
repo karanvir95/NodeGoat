@@ -16,19 +16,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
-          # Ensures the full commit history is available
           fetch-depth: 0
 
-      # Set up KICS scan
+      - name: Create output directory
+        run: mkdir -p $HOME/Documents/Dev/NodeGoat/results  # Use $HOME to refer to the home directory
+
       - name: Run KICS Scan
         uses: Checkmarx/kics-github-action@v2.1.3
         with:
-          # Path to scan; using '.' to scan the entire repository
           path: '/'
-          # Output location for scan results
-          output_path: ./kics_results
-          # Optional: Specify additional parameters if needed, such as cloud provider or secrets scanning
-          # Example:
-          # --cloud-provider aws,azure
-          # --disable-secrets
-          args: '--verbose --no-progress --output-format console'
+          output_path: $HOME/Documents/Dev/NodeGoat/results  # Set output path to the desired location
+          args: '--verbose --no-progress --output-format json'
+
+      - name: List files in output directory
+        run: ls -al $HOME/Documents/Dev/NodeGoat/results  # List files in the results directory
+
+      - name: Upload KICS Results as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: kics-results
+          path: $HOME/Documents/Dev/NodeGoat/results  # Upload results as artifact

@@ -31,3 +31,4 @@ jobs:
           # Example:
           # --cloud-provider aws,azure
           # --disable-secrets
+          args: '--verbose --no-progress --output-format console'

@@ -26,7 +26,7 @@ jobs:
           # Path to scan; using '.' to scan the entire repository
           path: '/'
           # Output location for scan results
-          output_path: ./results/kics_results
+          output_path: ./results
           # Optional: Specify additional parameters if needed, such as cloud provider or secrets scanning
           # Example:
           # --cloud-provider aws,azure

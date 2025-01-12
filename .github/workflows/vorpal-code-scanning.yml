@@ -35,23 +35,29 @@ jobs:
           level: warning
 
       # Ensure results are generated and present in the directory
-      - name: Check for results
+      - name: Check for results directory and move result files
         run: |
+          echo "Listing contents of the workspace before any checks:"
+          ls -al /github/workspace
+          
           if [ ! -d ./results ]; then
             echo "Results directory does not exist. Creating..."
             mkdir ./results
           fi
+          
           if [ -f /github/workspace/result.errorformat ]; then
             echo "Scan result file found."
             mv /github/workspace/result.errorformat ./results/
           else
-            echo "No result file found. Exiting..."
+            echo "No result file found. Listing all files in workspace for debug:"
+            ls -al /github/workspace
             exit 1
           fi
 
       # Archive the results directory before uploading
       - name: Archive scan results
         run: |
+          echo "Archiving the results directory."
           tar -czf /github/workspace/results.tar.gz -C ./results .
 
       # Upload the archived results

@@ -67,11 +67,11 @@ jobs:
           name: vorpal-scan-results
           path: ./results.tar.gz
 
-      # Verify results file was uploaded
+      # Verify result file (errorformat) is uploaded instead of results.json
       - name: Verify results
         run: |
-          if [ ! -f ./results/results.json ]; then
-            echo "Vorpal scan did not generate results.json"
+          if [ ! -f ./results/result.errorformat ]; then
+            echo "Vorpal scan did not generate result.errorformat"
             exit 1
           else
             echo "Scan completed successfully"

@@ -34,13 +34,13 @@ jobs:
           reporter: github-pr-review
           level: warning
 
-      # Upload result file as artifact
+      # Upload scan results as artifact
       - name: Upload Scan Results
         uses: actions/upload-artifact@v3
         with:
-          path: '.'
-          output_path: ./results
-          additional_args: '--log-level DEBUG'
+          name: vorpal-scan-results
+          path: ./results
+
 
       # List directory contents for debugging
       - name: List directory for debugging

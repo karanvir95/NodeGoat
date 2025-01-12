@@ -1,13 +1,13 @@
 name: Vorpal Code Scanning with reviewdog
 
-on: # Defines when the workflow should be triggered
-  push: # Trigger on push events to the specified branches
+on:
+  push:
     branches:
       - master
-  pull_request: # Trigger on pull requests targeting the specified branches
+  pull_request:
     branches:
       - master
-  schedule: # Trigger on a schedule (optional)
+  schedule:
     - cron: "0 3 * * *" # Runs daily at 3 AM UTC
 
 jobs:
@@ -15,18 +15,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # Step 2: Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 16
 
+      # Step 3: Install project dependencies
       - name: Install project dependencies
         run: npm install
 
-      - name: Vorpal GitHub Action With reviewdog
+      # Step 4: Run Vorpal Scan with reviewdog
+      - name: Vorpal GitHub Action with reviewdog
         uses: Checkmarx/vorpal-reviewdog-github-action@v1.1.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -34,9 +38,29 @@ jobs:
           reporter: github-pr-review
           level: warning
 
-      # Upload result file as artifact
+      # Step 5: Ensure result file exists and display summary
+      - name: Verify and Display Scan Results
+        run: |
+          if [ ! -f /github/workspace/result.errorformat ]; then
+            echo "Error: Scan result file not found!"
+            exit 1
+          fi
+          echo "Scan completed successfully. Results are ready for upload."
+
+      # Step 6: Upload result file as artifact
       - name: Upload Scan Results
         uses: actions/upload-artifact@v3
         with:
-          name: scan-results
+          name: vorpal-scan-results
           path: /github/workspace/result.errorformat
+
+      # Optional: Fail job if critical vulnerabilities are found
+      - name: Fail on Critical Vulnerabilities
+        if: always()
+        run: |
+          CRITICAL_ISSUES=$(grep -c "CRITICAL" /github/workspace/result.errorformat || true)
+          if [ "$CRITICAL_ISSUES" -gt 0 ]; then
+            echo "::error::Critical vulnerabilities found: $CRITICAL_ISSUES"
+            exit 1
+          fi
+

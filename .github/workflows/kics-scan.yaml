@@ -36,3 +36,10 @@ jobs:
           else
             echo "Scan completed successfully"
           fi
+
+      - name: Upload KICS Scan Results as an artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: kics-scan-results
+          path: ./results/results.json
+

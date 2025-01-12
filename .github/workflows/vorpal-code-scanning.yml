@@ -62,7 +62,7 @@ jobs:
 
       # Upload the archived results
       - name: Upload Scan Results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: vorpal-scan-results
           path: ./results.tar.gz

@@ -34,23 +34,26 @@ jobs:
           reporter: github-pr-review
           level: warning
 
-      - name: Move Results to Results Folder
-        run: |
-          mkdir -p ./results
-          mv /github/workspace/result.errorformat ./results/results.json || echo "No results file generated"
-
+      # Upload result file as artifact
       - name: Upload Scan Results
         uses: actions/upload-artifact@v3
         with:
-          name: scan-results
-          path: ./results/results.json # Only upload the results.json file
+          path: '.'
+          output_path: ./results
+          additional_args: '--log-level DEBUG'
 
+      # List directory contents for debugging
+      - name: List directory for debugging
+        run: |
+          echo "Listing the contents of the results directory"
+          ls -R ./results
 
+      # Verify that results.json exists
       - name: Verify results
         run: |
           if [ ! -f ./results/results.json ]; then
-            echo "Error: Vorpal scan did not generate results.json"
+            echo "Vorpal scan did not generate results.json"
             exit 1
           else
-            echo "Vorpal scan completed successfully and results.json is available."
+            echo "Scan completed successfully"
           fi

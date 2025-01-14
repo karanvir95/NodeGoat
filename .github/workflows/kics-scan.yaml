@@ -43,4 +43,4 @@ jobs:
           name: kics-scan-results
           path: ./results/results.json
 
-          # Change me: Hello
+          # Change me: Hello Everyone
